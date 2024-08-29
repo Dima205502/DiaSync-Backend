@@ -1,0 +1,28 @@
+{
+    "db" : {
+        "host" : "localhost",
+        "port" : 5432,
+        "user" : "KinDeR___",
+        "password" : "Dima205502",
+        "dbname" : "diasync"
+    },
+    "httpServer": {
+        "server_adr" : "localhost:8080",
+        "timeout": 4,
+        "idle_timeout": 60
+    },
+    "utils":{
+        "token": {
+            "access_expire_min": 15,
+            "refresh_expire_hour": 24,
+            "verify_email_expire_min": 15,
+            "secret_key": "asdlmkdsfnjaaklwqp"
+        },
+        "email": {
+            "app_password": "tigtemcpuosoaaxx",
+            "sender": "kozyrevdmitrij202@gmail.com",
+            "smtp_server": "smtp.gmail.com",
+            "smtp_adr":"smtp.gmail.com:587"
+        }
+    }
+}
