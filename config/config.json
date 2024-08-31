@@ -3,7 +3,7 @@
         "host" : "localhost",
         "port" : 5432,
         "user" : "KinDeR___",
-        "password" : "Dima205502",
+        "password" : "LKhiub213hj",
         "dbname" : "diasync",
         "clear_period": 86400
     },
@@ -22,7 +22,7 @@
         },
         "email": {
             "app_password": "hgcavnuzavizgrnk",
-            "sender": "kozyrevdmitrij202@gmail.com",
+            "sender": "kozyrevdmitr101@gmail.com",
             "smtp_server": "smtp.gmail.com",
             "smtp_adr":"smtp.gmail.com:587"
         }
