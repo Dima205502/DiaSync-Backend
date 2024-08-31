@@ -4,6 +4,7 @@ import (
 	"DiaSync/config"
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -11,6 +12,8 @@ import (
 type Storage struct {
 	db *sql.DB
 }
+
+var clearPeriod time.Duration
 
 func InitStorage(cfg config.Db) *Storage {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
@@ -23,11 +26,13 @@ func InitStorage(cfg config.Db) *Storage {
 		panic("coudn't connect to database")
 	}
 
-	DB.SetMaxOpenConns(10)
+	DB.SetMaxOpenConns(100)
 	DB.SetMaxIdleConns(5)
 
 	CreateUsersTable(DB)
 	CreateSessionsTable(DB)
+
+	clearPeriod = cfg.ClearPeriod
 
 	return &Storage{DB}
 }
@@ -57,5 +62,15 @@ func CreateSessionsTable(DB *sql.DB) {
 
 	if err != nil {
 		panic(err)
+	}
+}
+
+func (s *Storage) Clear() {
+	for {
+		time.Sleep(clearPeriod)
+		_, err := s.db.Exec(`DELETE FROM users WHERE verified=FALSE`)
+		if err != nil {
+			panic(err)
+		}
 	}
 }

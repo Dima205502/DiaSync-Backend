@@ -14,15 +14,16 @@ type Config struct {
 }
 
 type Db struct {
-	Host     string `json:"host"`
-	Port     int    `json:"port"`
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Dbname   string `json:"dbname"`
+	Host        string        `json:"host"`
+	Port        int           `json:"port"`
+	User        string        `json:"user"`
+	Password    string        `json:"password"`
+	Dbname      string        `json:"dbname"`
+	ClearPeriod time.Duration `json:"clear_period"`
 }
 
 type HttpServer struct {
-	Server_adr  string        `json:"server_adr"`
+	ServerAdr   string        `json:"server_adr"`
 	Timeout     time.Duration `json:"timeout"`
 	IdleTimeout time.Duration `json:"idle_timeout"`
 }
@@ -33,17 +34,18 @@ type Utils struct {
 }
 
 type Email struct {
-	App_password string `json:"app_password"`
-	Sender       string `json:"sender"`
-	Smtp_server  string `json:"smtp_server"`
-	Smtp_adr     string `json:"smtp_adr"`
+	AppPassword string `json:"app_password"`
+	Sender      string `json:"sender"`
+	SmtpServer  string `json:"smtp_server"`
+	SmtpAdr     string `json:"smtp_adr"`
 }
 
 type Token struct {
-	Access_expire_min       int64  `json:"access_expire_min"`
-	Refresh_expire_hour     int64  `json:"refresh_expire_hour"`
-	Verify_email_expire_min int64  `json:"verify_email_expire_min"`
-	Secret_key              string `json:"secret_key"`
+	AccessExpire      time.Duration `json:"access_expire"`
+	RefreshExpire     time.Duration `json:"refresh_expire"`
+	VerifyEmailExpire time.Duration `json:"verify_email_expire"`
+	PasswordExpire    time.Duration `json:"password_expire"`
+	SecretKey         string        `json:"secret_key"`
 }
 
 func Init() Config {

@@ -29,9 +29,7 @@ type AuthRepository struct {
 
 func (s *AuthRepository) CreateUser(user models.User) error {
 	hashedPassword := utils.HashPassword(user.Password)
-
 	_, err := s.db.Exec("INSERT INTO Users (email, password, role) VALUES($1, $2, $3)", user.Email, hashedPassword, user.Role)
-
 	return err
 }
 

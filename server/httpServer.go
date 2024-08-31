@@ -27,6 +27,7 @@ func InitRouter(storage *Storage) *gin.Engine {
 		auth.POST("/replacement-token", authController.ReplacementTokens)
 		auth.POST("/reset-password", authController.ResetPassword) // email, new_password
 		auth.POST("/verify-newpassword", authController.VerifyNewPassword)
+		auth.POST("/repeat-verify-email", authController.RepeatEmailVerify)
 	}
 
 	return router
@@ -34,7 +35,7 @@ func InitRouter(storage *Storage) *gin.Engine {
 
 func InitHttpServer(cfg config.Config, router http.Handler) *http.Server {
 	server := &http.Server{
-		Addr:         cfg.Server_adr,
+		Addr:         cfg.ServerAdr,
 		Handler:      router,
 		ReadTimeout:  cfg.HttpServer.Timeout,
 		WriteTimeout: cfg.HttpServer.Timeout,

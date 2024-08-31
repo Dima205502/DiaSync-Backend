@@ -78,6 +78,20 @@ func (mr *MockAuthorizationMockRecorder) GenerateTokens(arg0 interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateTokens", reflect.TypeOf((*MockAuthorization)(nil).GenerateTokens), arg0)
 }
 
+// RepeatEmailVerify mocks base method.
+func (m *MockAuthorization) RepeatEmailVerify(arg0 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RepeatEmailVerify", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RepeatEmailVerify indicates an expected call of RepeatEmailVerify.
+func (mr *MockAuthorizationMockRecorder) RepeatEmailVerify(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RepeatEmailVerify", reflect.TypeOf((*MockAuthorization)(nil).RepeatEmailVerify), arg0)
+}
+
 // ReplacementTokens mocks base method.
 func (m *MockAuthorization) ReplacementTokens(arg0 models.ReplacementTokensR) (string, string, error) {
 	m.ctrl.T.Helper()

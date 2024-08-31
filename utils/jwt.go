@@ -11,14 +11,14 @@ func GenerateAccessToken(email, role string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email":  email,
 		"role":   role,
-		"expire": time.Now().Add(time.Minute * time.Duration(access_expire_min)).Unix()})
+		"expire": time.Now().Add(accessExpire * time.Second).Unix()})
 
 	return token.SignedString([]byte(SecretKey))
 }
 
 func GenerateRefreshToken() (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"expire": time.Now().Add(time.Hour * time.Duration(refresh_expire_hour)).Unix()})
+		"expire": time.Now().Add(refreshExpire * time.Second).Unix()})
 
 	return token.SignedString([]byte(SecretKey))
 }
@@ -26,7 +26,7 @@ func GenerateRefreshToken() (string, error) {
 func GenerateVerifyEmailToken(email string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email":  email,
-		"expire": time.Now().Add(time.Minute * time.Duration(verify_email_expire_min)).Unix()})
+		"expire": time.Now().Add(verifyEmailExpire * time.Second).Unix()})
 	return token.SignedString([]byte(SecretKey))
 }
 
@@ -34,7 +34,7 @@ func GeneratePasswordToken(email, hashed_password string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email":           email,
 		"hashed_password": hashed_password,
-		"expire":          time.Now().Add(time.Minute * time.Duration(15)).Unix()})
+		"expire":          time.Now().Add(passwordExpire * time.Second).Unix()})
 
 	return token.SignedString([]byte(SecretKey))
 }

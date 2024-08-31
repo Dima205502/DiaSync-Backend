@@ -5,23 +5,23 @@ import (
 )
 
 func SendVerifyTokenMail(email, verifyEmailToken string) error {
-	auth := smtp.PlainAuth("", sender, app_password, smtp_server)
+	auth := smtp.PlainAuth("", sender, appPassword, smtpServer)
 
 	msg := "Subject: Verify Email\nClick on the link to confirm your email\nhttp://" +
-		server_adr + "/auth/verify-email?token=" + verifyEmailToken
+		serverAdr + "/auth/verify-email?token=" + verifyEmailToken
 
-	err := smtp.SendMail(smtp_adr, auth, sender, []string{email}, []byte(msg))
+	err := smtp.SendMail(smtpAdr, auth, sender, []string{email}, []byte(msg))
 
 	return err
 }
 
 func SendNewPasswordEmail(email, newPasswordToken string) error {
-	auth := smtp.PlainAuth("", sender, app_password, smtp_server)
+	auth := smtp.PlainAuth("", sender, appPassword, smtpServer)
 
 	msg := "Subject: Verify Email\nClick on the link to confirm your email\nhttp://" +
-		server_adr + "/auth/verify-newpassword?token=" + newPasswordToken
+		serverAdr + "/auth/verify-newpassword?token=" + newPasswordToken
 
-	err := smtp.SendMail(smtp_adr, auth, sender, []string{email}, []byte(msg))
+	err := smtp.SendMail(smtpAdr, auth, sender, []string{email}, []byte(msg))
 
 	return err
 }

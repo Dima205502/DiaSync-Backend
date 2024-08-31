@@ -18,6 +18,7 @@ type Authorization interface {
 	VerifyEmail(string) error
 	ResetPassword(models.ResetPasswordR) error
 	VerifyNewPassword(string) error
+	RepeatEmailVerify(string) error
 }
 
 func NewAuthService(authRepository repository.Authorization) Authorization {
@@ -41,9 +42,7 @@ func (as *AuthService) CreateUser(user models.User) error {
 		return err
 	}
 
-	err = utils.SendVerifyTokenMail(user.Email, verifyEmailToken)
-
-	return err
+	return utils.SendVerifyTokenMail(user.Email, verifyEmailToken)
 }
 
 func (as *AuthService) GenerateTokens(userInfo models.LoginR) (string, string, error) {
@@ -168,4 +167,14 @@ func (as *AuthService) VerifyNewPassword(token string) error {
 	hashedNewPassword := claims["hashed_password"].(string)
 
 	return as.AuthRepository.SetPassword(email, hashedNewPassword)
+}
+
+func (as *AuthService) RepeatEmailVerify(email string) error {
+	verifyEmailToken, err := utils.GenerateVerifyEmailToken(email)
+
+	if err != nil {
+		return err
+	}
+
+	return utils.SendVerifyTokenMail(email, verifyEmailToken)
 }

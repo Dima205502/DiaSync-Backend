@@ -21,7 +21,7 @@ func TestGenerateAccessToken(t *testing.T) {
 
 	for _, tt := range testCases {
 
-		tt.expire = time.Now().Add(time.Minute * time.Duration(access_expire_min)).Unix()
+		tt.expire = time.Now().Add(accessExpire * time.Second).Unix()
 		accessToken, err := GenerateAccessToken(tt.email, tt.role)
 
 		if err != nil {
@@ -93,7 +93,7 @@ func TestGenerateAccessToken(t *testing.T) {
 }
 
 func TestGenerateRefreshToken(t *testing.T) {
-	expire := time.Now().Add(time.Minute * time.Duration(access_expire_min)).Unix()
+	expire := time.Now().Add(refreshExpire * time.Second).Unix()
 
 	refreshToken, err := GenerateRefreshToken()
 

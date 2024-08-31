@@ -16,6 +16,7 @@ type Authorization interface {
 	VerifyEmail(*gin.Context)
 	ResetPassword(*gin.Context)
 	VerifyNewPassword(*gin.Context)
+	RepeatEmailVerify(*gin.Context)
 }
 
 func NewAuthController(authService service.Authorization) Authorization {
@@ -99,7 +100,7 @@ func (ac *AuthController) ReplacementTokens(context *gin.Context) {
 	access_token, refresh_token, err := ac.authService.ReplacementTokens(request)
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "couldn't replacement tokens"})
 		return
 	}
 
@@ -146,6 +147,28 @@ func (ac *AuthController) VerifyNewPassword(context *gin.Context) {
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	context.Status(http.StatusOK)
+}
+
+func (ac *AuthController) RepeatEmailVerify(context *gin.Context) {
+	var request struct {
+		Email string `json:"email" binding:"required"`
+	}
+
+	err := context.ShouldBindJSON(&request)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "incorrect data"})
+		return
+	}
+
+	err = ac.authService.RepeatEmailVerify(request.Email)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
