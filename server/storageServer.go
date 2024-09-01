@@ -67,7 +67,7 @@ func CreateSessionsTable(DB *sql.DB) {
 
 func (s *Storage) Clear() {
 	for {
-		time.Sleep(clearPeriod)
+		time.Sleep(clearPeriod * time.Second)
 		_, err := s.db.Exec(`DELETE FROM users WHERE verified=FALSE`)
 		if err != nil {
 			panic(err)

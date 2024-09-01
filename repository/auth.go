@@ -8,7 +8,6 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(models.User) error
 	ValidateCredentials(string, string) (string, error)
 	CreateSession(string, string, string) error
 	GenerateTokens(string, string, string) (string, string, error)
@@ -17,6 +16,7 @@ type Authorization interface {
 	FindUser(string) (models.User, error)
 	VerifyEmail(string) error
 	SetPassword(string, string) error
+	BeginTx() (*sql.Tx, error)
 }
 
 func NewAuthRepository(db *sql.DB) Authorization {
@@ -27,10 +27,8 @@ type AuthRepository struct {
 	db *sql.DB
 }
 
-func (s *AuthRepository) CreateUser(user models.User) error {
-	hashedPassword := utils.HashPassword(user.Password)
-	_, err := s.db.Exec("INSERT INTO Users (email, password, role) VALUES($1, $2, $3)", user.Email, hashedPassword, user.Role)
-	return err
+func (s *AuthRepository) BeginTx() (*sql.Tx, error) {
+	return s.db.Begin()
 }
 
 func (s *AuthRepository) ValidateCredentials(email, password string) (string, error) {

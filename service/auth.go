@@ -30,7 +30,16 @@ type AuthService struct {
 }
 
 func (as *AuthService) CreateUser(user models.User) error {
-	err := as.AuthRepository.CreateUser(user)
+	tx, err := as.AuthRepository.BeginTx()
+
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
+	hashedPassword := utils.HashPassword(user.Password)
+	_, err = tx.Exec("INSERT INTO Users (email, password, role) VALUES($1, $2, $3)", user.Email, hashedPassword, user.Role)
 
 	if err != nil {
 		return err
@@ -42,7 +51,15 @@ func (as *AuthService) CreateUser(user models.User) error {
 		return err
 	}
 
-	return utils.SendVerifyTokenMail(user.Email, verifyEmailToken)
+	err = utils.SendVerifyTokenMail(user.Email, verifyEmailToken)
+
+	if err != nil {
+		return err
+	}
+
+	tx.Commit()
+
+	return nil
 }
 
 func (as *AuthService) GenerateTokens(userInfo models.LoginR) (string, string, error) {
@@ -50,7 +67,7 @@ func (as *AuthService) GenerateTokens(userInfo models.LoginR) (string, string, e
 	userInfo.Role, err = as.AuthRepository.ValidateCredentials(userInfo.Email, userInfo.Password)
 
 	if err != nil {
-		return "", "", nil
+		return "", "", err
 	}
 
 	return as.AuthRepository.GenerateTokens(userInfo.Email, userInfo.Role, userInfo.DeviceID)
@@ -73,14 +90,14 @@ func (as *AuthService) ReplacementTokens(request models.ReplacementTokensR) (str
 		return "", "", err
 	}
 
+	if session.DeviceID != request.DeviceID {
+		return "", "", errors.New("invalid data")
+	}
+
 	err = as.AuthRepository.DeleteRefreshToken(request.RefreshToken)
 
 	if err != nil {
 		return "", "", err
-	}
-
-	if session.DeviceID != request.DeviceID {
-		return "", "", errors.New("invalid data")
 	}
 
 	user, err := as.AuthRepository.FindUser(session.UserEmail)
