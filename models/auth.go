@@ -20,3 +20,7 @@ type ResetPasswordR struct {
 	Email       string `binding:"required"`
 	NewPassword string `json:"new_password" binding:"required"`
 }
+
+type RepeatEmailVerifyR struct {
+	Email string `binding:"required"`
+}

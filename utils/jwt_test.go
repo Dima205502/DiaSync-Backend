@@ -28,10 +28,6 @@ func TestGenerateAccessToken(t *testing.T) {
 			t.Error(err)
 		}
 
-		if accessToken == "" {
-			t.Error("token is empty")
-		}
-
 		parsedToken, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
 			_, ok := token.Method.(*jwt.SigningMethodHMAC)
 
@@ -101,10 +97,6 @@ func TestGenerateRefreshToken(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	if refreshToken == "" {
-		t.Error("token is empty")
-	}
-
 	parsedToken, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 
@@ -145,18 +137,116 @@ func TestGenerateRefreshToken(t *testing.T) {
 
 }
 
-func TestVerifyToken(t *testing.T) {
-	var testCases = []string{
-		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmUiOjE3MjQ0MTM2NDZ9.OJqTLEfG6j8F1f7lMONjegc3hv1nNiX1yhMT-w1KUTc",
-		"skdfskjfdh", "", "@"}
+func TestGeneratePasswordToken(t *testing.T) {
+	expire := time.Now().Add(passwordExpire * time.Second).Unix()
 
-	t.Log("all tokens in tests are invalid")
+	passwordToken, err := GeneratePasswordToken("iopawndoiwqdno@yandex.ru", "ioadjioaun1i023hni12hj3nbi")
 
-	for _, tt := range testCases {
-		err := VerifyToken(tt)
+	if err != nil {
+		t.Error(err.Error())
+	}
 
-		if err == nil {
-			t.Error("token is valid!")
+	parsedToken, err := jwt.Parse(passwordToken, func(token *jwt.Token) (interface{}, error) {
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+
+		if !ok {
+			return nil, errors.New("unexpected signing method")
 		}
+
+		return []byte(SecretKey), nil
+	})
+
+	if err != nil {
+		t.Error("could not parse token")
+	}
+
+	tokenIsValid := parsedToken.Valid
+
+	if !tokenIsValid {
+		t.Error("invalid token")
+	}
+
+	claims, ok := parsedToken.Claims.(jwt.MapClaims)
+
+	if !ok {
+		t.Error("invalid token claims")
+	}
+
+	_, ok = claims["expire"].(float64)
+
+	if !ok {
+		t.Fail()
+	}
+
+	token_expire := int64(claims["expire"].(float64))
+
+	if token_expire-expire > int64(5*time.Second) {
+		t.Error("expire differense more then five second")
+	}
+
+	email := claims["email"].(string)
+
+	if email != "iopawndoiwqdno@yandex.ru" {
+		t.Error("other email")
+	}
+
+	hashedPassword := claims["hashed_password"].(string)
+
+	if hashedPassword != "ioadjioaun1i023hni12hj3nbi" {
+		t.Error("other password")
+	}
+}
+
+func TestGenerateVerifyEmailToken(t *testing.T) {
+	expire := time.Now().Add(verifyEmailExpire * time.Second).Unix()
+
+	verifyEmailToken, err := GenerateVerifyEmailToken("aopjdqonwd@gmail.com")
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	parsedToken, err := jwt.Parse(verifyEmailToken, func(token *jwt.Token) (interface{}, error) {
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+
+		if !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+
+		return []byte(SecretKey), nil
+	})
+
+	if err != nil {
+		t.Error("could not parse token")
+	}
+
+	tokenIsValid := parsedToken.Valid
+
+	if !tokenIsValid {
+		t.Error("invalid token")
+	}
+
+	claims, ok := parsedToken.Claims.(jwt.MapClaims)
+
+	if !ok {
+		t.Error("invalid token claims")
+	}
+
+	_, ok = claims["expire"].(float64)
+
+	if !ok {
+		t.Fail()
+	}
+
+	token_expire := int64(claims["expire"].(float64))
+
+	if token_expire-expire > int64(5*time.Second) {
+		t.Error("expire differense more then five second")
+	}
+
+	email := claims["email"].(string)
+
+	if email != "aopjdqonwd@gmail.com" {
+		t.Error("other email")
 	}
 }

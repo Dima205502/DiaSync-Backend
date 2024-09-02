@@ -4,13 +4,10 @@ import (
 	"DiaSync/config"
 	"DiaSync/server"
 	"DiaSync/utils"
-	"fmt"
 )
 
 func main() {
 	cfg := config.Init()
-
-	fmt.Print(cfg)
 
 	utils.Init(cfg)
 

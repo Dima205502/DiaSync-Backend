@@ -154,9 +154,7 @@ func (ac *AuthController) VerifyNewPassword(context *gin.Context) {
 }
 
 func (ac *AuthController) RepeatEmailVerify(context *gin.Context) {
-	var request struct {
-		Email string `json:"email" binding:"required"`
-	}
+	var request models.RepeatEmailVerifyR
 
 	err := context.ShouldBindJSON(&request)
 
