@@ -13,7 +13,8 @@ FROM alpine
 WORKDIR  /app
 
 COPY --from=builder /build/diasync .
+COPY --from=builder /build/config/config.json .
 
 EXPOSE 8080
 
-CMD ["./diasync"]
+CMD ["./diasync", "-p", "/app/config.json"]

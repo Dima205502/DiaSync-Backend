@@ -1,0 +1,23 @@
+services:
+  diasync:
+    container_name: diasync
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+  db:
+    container_name: db
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - /home/kinder/postgresql/data:/var/lib/postgresql/data
